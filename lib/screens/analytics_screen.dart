@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/transaction_provider.dart';
 import '../widgets/pie_chart_view.dart';
 import '../widgets/category_breakdown.dart';
 
-enum AnalyticsViewMode {
-  pie,
-  bars,
-  both,
-}
+enum AnalyticsViewMode { pie, bars, both }
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -41,13 +38,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final txProvider = context.watch<TransactionProvider>();
 
     final monthTxs = txProvider.getTransactionsForMonth(_currentMonth);
-    final categoryTotals = txProvider.getExpenseCategoriesForMonth(_currentMonth);
+    final categoryTotals = txProvider.getExpenseCategoriesForMonth(
+      _currentMonth,
+    );
     final totalExpense = txProvider.getTotalExpenseForMonth(_currentMonth);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ripartizione Spese'),
-      ),
+      appBar: AppBar(title: const Text('Ripartizione Spese')),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -105,7 +102,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     children: [
                       Text(
                         'Totale Spese del Mese',
-                        style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                        style: TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 13,
+                        ),
                       ),
                       SizedBox(height: 2),
                       Text(
@@ -159,7 +159,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             const SizedBox(height: 8),
 
             // Vista Grafico a Torta
-            if (_viewMode == AnalyticsViewMode.pie || _viewMode == AnalyticsViewMode.both)
+            if (_viewMode == AnalyticsViewMode.pie ||
+                _viewMode == AnalyticsViewMode.both)
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 padding: const EdgeInsets.all(18),
@@ -173,7 +174,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   children: [
                     const Text(
                       'Grafico a Torta',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     PieChartView(
@@ -185,7 +189,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               ),
 
             // Vista Barre Progressiva (stile Home)
-            if (_viewMode == AnalyticsViewMode.bars || _viewMode == AnalyticsViewMode.both)
+            if (_viewMode == AnalyticsViewMode.bars ||
+                _viewMode == AnalyticsViewMode.both)
               CategoryBreakdown(transactions: monthTxs),
 
             const SizedBox(height: 40),

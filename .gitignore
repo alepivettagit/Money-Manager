@@ -50,3 +50,9 @@ app.*.map.json
 # Escludi la versione Web / Firebase
 /money_manager_web/
 
+# Firebase & Secret Credentials (Mai committare credenziali personali)
+/android/app/google-services.json
+/lib/firebase_options.dart
+/lib/constants/api_constants.dart
+*.env
+

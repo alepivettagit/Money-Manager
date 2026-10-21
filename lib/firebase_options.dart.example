@@ -1,0 +1,38 @@
+// Configurazione Firebase multipiattaforma.
+// 1. Genera questo file usando la CLI di FlutterFire (`flutterfire configure`), oppure
+// 2. Copia questo file in 'lib/firebase_options.dart' e inserisci i dati del tuo progetto Firebase.
+
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+
+class DefaultFirebaseOptions {
+  static FirebaseOptions get currentPlatform {
+    if (kIsWeb) {
+      return web;
+    }
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        return android;
+      default:
+        return web;
+    }
+  }
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'INSERISCI_API_KEY_WEB',
+    appId: '1:000000000000:web:0000000000000000000000',
+    messagingSenderId: '000000000000',
+    projectId: 'tuo-progetto-firebase',
+    authDomain: 'tuo-progetto-firebase.firebaseapp.com',
+    storageBucket: 'tuo-progetto-firebase.firebasestorage.app',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'INSERISCI_API_KEY_ANDROID',
+    appId: '1:000000000000:android:0000000000000000000000',
+    messagingSenderId: '000000000000',
+    projectId: 'tuo-progetto-firebase',
+    storageBucket: 'tuo-progetto-firebase.firebasestorage.app',
+  );
+}

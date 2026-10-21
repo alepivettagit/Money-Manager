@@ -1,12 +1,33 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+
+import 'firebase_options.dart';
 import 'providers/account_provider.dart';
+import 'providers/category_provider.dart';
 import 'providers/transaction_provider.dart';
 import 'screens/account_selection_screen.dart';
+import 'screens/auth_screen.dart';
+import 'services/auth_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint('Inizializzazione Firebase con options: $e');
+    try {
+      await Firebase.initializeApp();
+    } catch (e2) {
+      debugPrint('Inizializzazione Firebase nativa fallback: $e2');
+    }
+  }
+
+  await AuthService().initPersistence();
   await initializeDateFormatting('it_IT', null);
   runApp(const MoneyManagerApp());
 }
@@ -18,12 +39,9 @@ class MoneyManagerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (_) => AccountProvider()..loadAccounts(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => TransactionProvider(),
-        ),
+        ChangeNotifierProvider(create: (_) => AccountProvider()),
+        ChangeNotifierProvider(create: (_) => TransactionProvider()),
+        ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ],
       child: MaterialApp(
         title: 'Money Manager',
@@ -49,8 +67,48 @@ class MoneyManagerApp extends StatelessWidget {
           ),
           cardColor: Colors.white,
         ),
-        home: const AccountSelectionScreen(),
+        builder: (context, child) {
+          final width = MediaQuery.of(context).size.width;
+          if (width > 520) {
+            return Container(
+              color: const Color(0xFF0F172A),
+              alignment: Alignment.center,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 460),
+                child: ClipRRect(child: child ?? const SizedBox.shrink()),
+              ),
+            );
+          }
+          return child ?? const SizedBox.shrink();
+        },
+        home: const AuthGate(),
       ),
+    );
+  }
+}
+
+class AuthGate extends StatelessWidget {
+  const AuthGate({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: AuthService().authStateChanges,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFF0F172A),
+              ),
+            ),
+          );
+        }
+        if (snapshot.hasData && snapshot.data != null) {
+          return const AccountSelectionScreen();
+        }
+        return const AuthScreen();
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import '../models/account.dart';
 
 class SummaryCard extends StatelessWidget {
@@ -66,7 +67,10 @@ class SummaryCard extends StatelessWidget {
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: currentBalance >= 0
                       ? const Color(0xFF10B981).withValues(alpha: 0.15)
@@ -76,7 +80,9 @@ class SummaryCard extends StatelessWidget {
                 child: Text(
                   currentBalance >= 0 ? 'Attivo' : 'Passivo',
                   style: TextStyle(
-                    color: currentBalance >= 0 ? const Color(0xFF10B981) : const Color(0xFFEF4444),
+                    color: currentBalance >= 0
+                        ? const Color(0xFF10B981)
+                        : const Color(0xFFEF4444),
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -116,10 +122,7 @@ class SummaryCard extends StatelessWidget {
               children: [
                 const Text(
                   'Importo di partenza:',
-                  style: TextStyle(
-                    color: Color(0xFF94A3B8),
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
                 ),
                 Text(
                   currencyFormat.format(account.initialBalance),

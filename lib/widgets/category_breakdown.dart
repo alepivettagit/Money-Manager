@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import '../models/transaction.dart';
+import '../providers/category_provider.dart';
 
 class CategoryBreakdown extends StatelessWidget {
   final List<Transaction> transactions;
@@ -12,7 +15,9 @@ class CategoryBreakdown extends StatelessWidget {
     final currencyFormat = NumberFormat.currency(locale: 'it_IT', symbol: '€');
 
     // Calcola il totale delle spese per ogni categoria
-    final expenses = transactions.where((t) => t.type == TransactionType.expense).toList();
+    final expenses = transactions
+        .where((t) => t.type == TransactionType.expense)
+        .toList();
     if (expenses.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -22,7 +27,8 @@ class CategoryBreakdown extends StatelessWidget {
 
     final Map<String, double> categoryTotals = {};
     for (final exp in expenses) {
-      categoryTotals[exp.category] = (categoryTotals[exp.category] ?? 0.0) + exp.amount;
+      categoryTotals[exp.category] =
+          (categoryTotals[exp.category] ?? 0.0) + exp.amount;
     }
 
     // Ordina per importo decrescente
@@ -52,23 +58,23 @@ class CategoryBreakdown extends StatelessWidget {
             children: [
               const Text(
                 'Ripartizione Spese',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Text(
                 '${sortedCategories.length} categorie',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
             ],
           ),
           const SizedBox(height: 14),
           ...sortedCategories.map((entry) {
-            final category = TransactionCategories.getCategory(entry.key, TransactionType.expense);
+            final catProvider = context.watch<CategoryProvider?>();
+            final category =
+                catProvider?.getCategory(entry.key, TransactionType.expense) ??
+                TransactionCategories.getCategory(
+                  entry.key,
+                  TransactionType.expense,
+                );
             final percentage = (entry.value / totalExpense) * 100;
 
             return Padding(
@@ -83,13 +89,20 @@ class CategoryBreakdown extends StatelessWidget {
                           color: category.color.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Icon(category.icon, color: category.color, size: 16),
+                        child: Icon(
+                          category.icon,
+                          color: category.color,
+                          size: 16,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
                           entry.key,
-                          style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                       Text(

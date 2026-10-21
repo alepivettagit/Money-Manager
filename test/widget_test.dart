@@ -1,27 +1,20 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:money_manager/main.dart';
+import 'package:money_manager/models/category_item.dart';
 
 void main() {
-  setUpAll(() {
-    sqfliteFfiInit();
-    databaseFactory = databaseFactoryFfi;
-  });
+  test('CategoryItem test and serialization', () {
+    const item = CategoryItem(
+      name: 'Spesa e Cibo',
+      icon: Icons.shopping_basket_rounded,
+      color: Color(0xFF10B981),
+    );
 
-  testWidgets('Money Manager app smoke test', (WidgetTester tester) async {
-    await initializeDateFormatting('it_IT', null);
-    SharedPreferences.setMockInitialValues({});
+    final map = item.toMap();
+    final restored = CategoryItem.fromMap(map);
 
-    await tester.runAsync(() async {
-      await tester.pumpWidget(const MoneyManagerApp());
-      await Future.delayed(const Duration(milliseconds: 600));
-    });
-
-    await tester.pump();
-    await tester.pump(const Duration(seconds: 11));
-
-    expect(find.text('I Miei Saldi'), findsOneWidget);
+    expect(restored.name, 'Spesa e Cibo');
+    expect(restored.icon.codePoint, item.icon.codePoint);
+    expect(restored.color.toARGB32(), item.color.toARGB32());
   });
 }

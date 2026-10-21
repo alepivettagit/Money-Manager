@@ -74,10 +74,7 @@ class _CreateAccountDialogState extends State<CreateAccountDialog> {
                   const SizedBox(width: 14),
                   const Text(
                     'Nuovo Saldo',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -90,7 +87,9 @@ class _CreateAccountDialogState extends State<CreateAccountDialog> {
                 decoration: InputDecoration(
                   labelText: 'Nome del Saldo / Conto',
                   hintText: 'Es. Conto Intesa, Portafoglio...',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   prefixIcon: const Icon(Icons.label_outline_rounded),
                 ),
               ),
@@ -102,7 +101,10 @@ class _CreateAccountDialogState extends State<CreateAccountDialog> {
                 runSpacing: 4,
                 children: _suggestions.map((suggestion) {
                   return ActionChip(
-                    label: Text(suggestion, style: const TextStyle(fontSize: 12)),
+                    label: Text(
+                      suggestion,
+                      style: const TextStyle(fontSize: 12),
+                    ),
                     onPressed: () {
                       setState(() {
                         _nameController.text = suggestion;
@@ -116,11 +118,15 @@ class _CreateAccountDialogState extends State<CreateAccountDialog> {
               // Importo iniziale
               TextField(
                 controller: _balanceController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: InputDecoration(
                   labelText: 'Importo Iniziale (€)',
                   hintText: '0,00',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
                   prefixIcon: const Icon(Icons.euro_rounded),
                 ),
               ),
@@ -132,7 +138,10 @@ class _CreateAccountDialogState extends State<CreateAccountDialog> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Annulla', style: TextStyle(color: Colors.grey)),
+                    child: const Text(
+                      'Annulla',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
                   const SizedBox(width: 8),
                   ElevatedButton(
@@ -140,7 +149,10 @@ class _CreateAccountDialogState extends State<CreateAccountDialog> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0F172A),
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),

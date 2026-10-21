@@ -1,91 +1,131 @@
 <div align="center">
   <img src="assets/icon/app_icon.png" alt="Money Manager Logo" width="120" height="120" style="border-radius: 24px;" />
 
-  # 💰 Money Manager
-  **La tua app personale, semplice e 100% locale per gestire conti, spese ed entrate su smartphone.**
+  # 💰 Money Manager (Android APK)
+  **Gestione finanze personali, conti multipli, sincronizzazione Cloud Firestore e Scansione Scontrini con Google Gemini AI.**
 
-  [![Scarica APK Android](https://img.shields.io/badge/📲_SCARICA_L'APP_(ANDROID_APK)-v1.0.0-10B981?style=for-the-badge&logo=android&logoColor=white)](https://github.com/alepivettagit/Money-Manager/releases/latest/download/MoneyManager.apk)
+  [![Scarica APK Android](https://img.shields.io/badge/📲_SCARICA_L'APP_(ANDROID_APK)-v2.0.0-10B981?style=for-the-badge&logo=android&logoColor=white)](https://github.com/alepivettagit/Money-Manager/releases/latest/download/MoneyManager.apk)
   [![Versione Release](https://img.shields.io/github/v/release/alepivettagit/Money-Manager?style=for-the-badge&label=Release&color=0F172A)](https://github.com/alepivettagit/Money-Manager/releases/latest)
-  [![Flutter](https://img.shields.io/badge/Flutter-Mobile_App-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+  [![Flutter](https://img.shields.io/badge/Flutter-3.47+-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+  [![Firebase](https://img.shields.io/badge/Firebase-Auth_%26_Firestore-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
+  [![Google Gemini](https://img.shields.io/badge/Gemini_AI-Receipt_OCR-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://aistudio.google.com)
 </div>
-
----
-
-## 📥 Download Rapido (1-Click)
-
-Vuoi installare subito l'applicazione sul tuo telefono Android? Clicca sul link qui sotto:
-
-👉 **[📥 CLICCA QUI PER SCARICARE MONEY MANAGER (MoneyManager.apk)](https://github.com/alepivettagit/Money-Manager/releases/latest/download/MoneyManager.apk)**
-
-*(In alternativa puoi visitare la sezione **[Releases](https://github.com/alepivettagit/Money-Manager/releases/latest)** a destra nella pagina della repository e scaricare il file `MoneyManager.apk`)*
 
 ---
 
 ## 📱 Cos'è Money Manager?
 
-**Money Manager** è un'applicazione mobile realizzata in **Flutter** pensata per tenere sotto controllo le proprie finanze personali in modo rapido, chiaro e totalmente privato.
+**Money Manager** è un'applicazione mobile moderna sviluppata in **Flutter** che ti permette di tenere sotto controllo le tue finanze personali, monitorare le entrate e le uscite su più portafogli e automatizzare l'inserimento delle spese scansionando gli scontrini con l'intelligenza artificiale di **Google Gemini**.
 
-A differenza delle app tradizionali che richiedono registrazioni, abbonamenti o salvataggi su server esterni, questa versione di **Money Manager funziona al 100% in locale sul tuo dispositivo**:
-- 🔒 **Massima Privacy (Zero Cloud)**: tutti i tuoi saldi e movimenti sono salvati esclusivamente nella memoria interna del tuo telefono tramite un database **SQLite** locale. Nessun dato viene inviato online.
-- ⚡ **Funziona Offline**: non serve alcuna connessione a Internet per aggiungere spese, consultare il calendario o visualizzare i grafici.
-- 🏦 **Gestione Multi-Saldo / Multi-Conto**: puoi creare e gestire più portafogli separati (es. *Conto Corrente*, *Contanti*, *Carta Prepagata*, *Risparmi*), ciascuno con il proprio saldo iniziale e storico dedicato.
-
-### ✨ Funzionalità Principali
-
-1. **Selettore Saldi & Portafogli (`AccountSelectionScreen`)**
-   - Crea tutti i conti o salvadanai che desideri impostando un nome e il saldo di partenza.
-   - Passa da un conto all'altro in qualsiasi momento o elimina un saldo quando non ti serve più.
-2. **Dashboard Principale (`Home`)**
-   - Visualizza a colpo d'occhio il **Saldo Attuale**, il totale delle **Entrate** e delle **Uscite** del mese selezionato.
-   - Sfoglia i mesi precedenti o successivi con un tocco.
-   - Registra nuove transazioni in pochi secondi scegliendo tra **Uscita** o **Entrata**, importo, data, nota facoltativa e **Categoria** dedicata con icone e colori:
-     - *Categorie Uscite*: Spesa e Cibo, Ristoranti & Bar, Trasporti & Auto, Casa & Bollette, Svago & Tempo Libero, Shopping, Salute & Cura, Altro.
-     - *Categorie Entrate*: Stipendio, Bonifico / Rimborso, Regalo, Investimenti, Altro.
-3. **Calendario Interattivo (`Calendario`)**
-   - Consulta una vista mensile interattiva che evidenzia i giorni in cui hai effettuato movimenti.
-   - Tocca qualsiasi giorno del calendario per aprire il riepilogo dettagliato delle entrate e delle uscite di quella giornata.
-4. **Statistiche e Grafici (`Ripartizione`)**
-   - Analizza come spendi o incassi il tuo denaro grazie a un **grafico a torta interattivo** e alla lista dettagliata con le percentuali e gli importi per singola categoria.
+Tutti i dati sono sincronizzati in tempo reale tramite **Firebase (Cloud Firestore)**, garantendo accesso sicuro e simultaneo sia dal tuo smartphone che dalla versione Web / PWA.
 
 ---
 
-## 📖 Tutorial Passo-Passo: Come Scaricare e Installare l'App
+## ✨ Funzionalità Principali
 
-Poiché l'app viene distribuita direttamente tramite GitHub (senza passare dal Google Play Store), segui questi semplici passaggi sul tuo smartphone **Android**:
-
-### Passo 1: Scarica il file di installazione (`MoneyManager.apk`)
-1. Apri questa pagina GitHub dal browser del tuo telefono (es. **Chrome**, **Samsung Internet**, **Firefox**, ecc.).
-2. Tocca il pulsante verde **[📲 SCARICA L'APP (ANDROID APK)](https://github.com/alepivettagit/Money-Manager/releases/latest/download/MoneyManager.apk)** che trovi in cima a questa guida.
-
-### Passo 2: Conferma il download nel browser
-1. Il browser potrebbe mostrarti un avviso standard di Android come *" Il file potrebbe essere dannoso. Vuoi scaricare comunque MoneyManager.apk?"* (questo messaggio compare per qualsiasi app scaricata fuori dal Play Store).
-2. Tocca **"Scarica comunque"** (oppure **"OK"**) e attendi qualche secondo il completamento del download (~55 MB).
-
-### Passo 3: Apri il file scaricato
-1. Una volta terminato il download, tocca **"Apri"** direttamente nella notifica in basso/in alto nel browser.
-2. Se hai chiuso la notifica, apri l'app **File / Archivio / Download** del tuo telefono e tocca il file **`MoneyManager.apk`**.
-
-### Passo 4: Consenti l'installazione e avvia l'app
-1. Se è la prima volta che installi un'app dal browser, Android ti mostrerà un messaggio di sicurezza: *"Per motivi di sicurezza, il telefono non è attualmente autorizzato a installare app sconosciute da questa origine"*.
-2. Tocca **"Impostazioni"** nel popup e attiva l'interruttore **"Consenti da questa origine"** (o *"Autorizza da questa fonte"*), poi torna indietro di una schermata.
-3. Tocca **"Installa"** nella finestra di conferma di **Money Manager**.
-4. Qualora comparisse un avviso di *Google Play Protect* (perché l'app è personale e non registrata sullo store), tocca **"Ulteriori dettagli"** e poi **"Installa comunque"**.
-5. Al termine dell'installazione, tocca **"Apri"**: crea il tuo primo saldo iniziale e inizia subito a usare **Money Manager**! 🎉
+- 🏦 **Gestione Multi-Saldo & Portafogli**:
+  - Crea e gestisci portafogli separati (es. *Conto Corrente*, *Contanti*, *Carta Prepagata*, *Risparmi*).
+  - Imposta un saldo iniziale personalizzato e passa istantaneamente da un conto all'altro.
+- ⚡ **Scansione Scontrini Intelligente con Gemini AI**:
+  - Scatta una foto allo scontrino o selezionala dalla galleria.
+  - L'IA multimodale di Google Gemini analizza l'immagine ed estrae in pochi secondi: **importo totale**, **esercente/negozio**, **data della spesa** e suggerisce la **categoria** appropriata.
+- 🏷️ **Categorie Dinamiche Personalizzabili**:
+  - Crea, modifica ed elimina categorie di spesa ed entrata direttamente dall'app.
+  - Assegna icone e colori personalizzati per rendere ogni spesa riconoscibile a colpo d'occhio.
+- 📊 **Dashboard & Statistiche Mensili**:
+  - Saldo totale calcolato in tempo reale, riepilogo mensile con entrate, uscite e margine netto.
+  - Grafico interattivo a torta e lista dettagliata delle percentuali di spesa per categoria.
+- 📅 **Calendario Interattivo delle Spese**:
+  - Vista mensile con evidenziazione dei giorni in cui sono stati registrati movimenti.
+  - Tocca qualsiasi giorno per visualizzare il dettaglio delle transazioni giornaliere.
+- 🔐 **Autenticazione Sicura**:
+  - Login e registrazione con email e password gestiti tramite **Firebase Authentication**.
+  - Possibilità di disconnettere l'account o passare a un altro profilo in qualsiasi momento.
 
 ---
 
-## 🛠️ Informazioni Tecniche e Sviluppo (Per Sviluppatori)
+## 📥 Download e Installazione Rapida (1-Click)
 
-Il progetto è sviluppato in **Flutter (Dart)** utilizzando:
-- `provider` per la gestione dello stato reattivo (`AccountProvider`, `TransactionProvider`)
-- `sqflite` per la persistenza locale su database SQLite (`DatabaseHelper`)
-- `table_calendar` per il calendario interattivo dei movimenti
-- `fl_chart` per i grafici a torta nella sezione di analisi
-- `intl` per la formattazione di valute (`€`) e date in lingua italiana (`it_IT`)
+Per installare subito l'applicazione sul tuo smartphone **Android**:
 
-### Eseguire o compilare il progetto da codice sorgente
+👉 **[📥 SCARICA MONEY MANAGER (MoneyManager.apk)](https://github.com/alepivettagit/Money-Manager/releases/latest/download/MoneyManager.apk)**
 
-Assicurati di avere [Flutter SDK](https://docs.flutter.dev/get-started/install) installato sul tuo computer, quindi esegui nel terminale:
+*(In alternativa, visita la sezione [Releases](https://github.com/alepivettagit/Money-Manager/releases/latest) sulla destra della repository).*
+
+### Come installare il file APK su Android:
+1. Scarica il file `MoneyManager.apk` dal link sopra usando il browser del tuo telefono (Chrome, Firefox, Samsung Internet).
+2. Se compare l'avviso *"Il file potrebbe essere dannoso"* (messaggio standard di Android per le app scaricate all'esterno del Play Store), tocca **Scarica comunque**.
+3. Al termine del download, tocca **Apri** dalla notifica o dalla cartella *Download* del telefono.
+4. Se richiesto, attiva l'opzione **Consenti installazione da questa origine** nelle impostazioni di sicurezza.
+5. Tocca **Installa** e poi **Apri** per iniziare ad usare l'app!
+
+---
+
+## 🛠️ Guida Sviluppatore: Configurazione e Compilazione
+
+Se desideri clonare il progetto, personalizzarlo o compilare il codice sorgente:
+
+### 1. Prerequisiti
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (versione `>= 3.13.5`)
+- [Android Studio](https://developer.android.com/studio) con Android SDK installato
+- Un account Google per accedere a [Firebase Console](https://console.firebase.google.com/) e [Google AI Studio](https://aistudio.google.com/)
+
+---
+
+### 2. Configurazione Firebase
+1. Vai su [Firebase Console](https://console.firebase.google.com/) e crea un nuovo progetto (es. `money-manager`).
+2. **Abilita Firebase Authentication**:
+   - Vai nella sezione **Authentication** -> **Sign-in method** -> abilita il provider **Email/Password**.
+3. **Abilita Cloud Firestore**:
+   - Vai nella sezione **Firestore Database** -> **Crea database** (in modalità di produzione o test).
+   - Imposta le seguenti regole di sicurezza in Firestore (`firestore.rules`):
+     ```javascript
+     rules_version = '2';
+     service cloud.firestore {
+       match /databases/{database}/documents {
+         match /users/{userId}/{document=**} {
+           allow read, write: if request.auth != null && request.auth.uid == userId;
+         }
+       }
+     }
+     ```
+4. **Registra l'app Android**:
+   - Nelle impostazioni del progetto Firebase, clicca su **Aggiungi app** -> **Android**.
+   - Package name: `com.example.money_manager` (o il tuo applicationId personalizzato).
+   - Scarica il file `google-services.json` e posizionalo in:
+     ```text
+     android/app/google-services.json
+     ```
+     *(Puoi consultare `android/app/google-services.json.example` come riferimento).*
+
+---
+
+### 3. Configurazione Google Gemini API (Per Scanner Scontrini)
+1. Vai su [Google AI Studio](https://aistudio.google.com/apikey) e crea una chiave API gratuita.
+2. Copia il file template `lib/constants/api_constants.dart.example`:
+   ```bash
+   cp lib/constants/api_constants.dart.example lib/constants/api_constants.dart
+   ```
+3. Apri `lib/constants/api_constants.dart` e inserisci la tua chiave:
+   ```dart
+   const String geminiApiKey = 'LA_TUA_CHIAVE_API_GEMINI';
+   const String geminiModelName = 'gemini-2.5-flash';
+   ```
+   > [!TIP]
+   > Assicurati che su Google AI Studio la chiave non abbia restrizioni di HTTP Referrer che bloccherebbero le richieste native da Android.
+
+---
+
+### 4. Configurazione `firebase_options.dart`
+Copia il file template:
+```bash
+cp lib/firebase_options.dart.example lib/firebase_options.dart
+```
+Inserisci l'API Key, il Project ID e l'App ID del tuo progetto Firebase (oppure genera il file automaticamente eseguendo `flutterfire configure`).
+
+---
+
+### 5. Compilazione ed Esecuzione
 
 ```bash
 # 1. Clona la repository
@@ -95,10 +135,29 @@ cd Money-Manager
 # 2. Scarica le dipendenze
 flutter pub get
 
-# 3. Avvia l'app su un emulatore o dispositivo collegato
+# 3. Avvia in modalità debug su dispositivo o emulatore collegato
 flutter run
 
-# 4. Compila un nuovo file APK di release
+# 4. Compila l'APK di release
 flutter build apk --release
 ```
-Il file compilato verrà generato in `build/app/outputs/flutter-apk/app-release.apk`.
+L'APK generato sarà disponibile in `build/app/outputs/flutter-apk/app-release.apk`.
+
+---
+
+## 📂 Struttura del Progetto
+
+```text
+lib/
+├── constants/          # Costanti di configurazione (Gemini API)
+├── models/             # Modelli dati (Account, Transaction, CategoryItem)
+├── providers/          # Gestione stato reattivo con Provider
+├── screens/            # Schermate principali (Auth, Home, Calendario, Ripartizione, Saldi)
+├── services/           # Servizi backend (AuthService, DatabaseHelper, GeminiReceiptService)
+└── widgets/            # Componenti UI (Scanner scontrini, grafici, dialoghi)
+```
+
+---
+
+## 📄 Licenza
+Rilasciato sotto licenza MIT. Libero per uso personale e modifiche.

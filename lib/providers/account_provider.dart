@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+
 import '../models/account.dart';
 import '../models/transaction.dart';
 import '../services/database_helper.dart';
@@ -23,7 +24,6 @@ class AccountProvider extends ChangeNotifier {
       if (_accounts.isNotEmpty && _selectedAccount == null) {
         _selectedAccount = _accounts.first;
       } else if (_accounts.isNotEmpty && _selectedAccount != null) {
-        // Aggiorna l'account selezionato se è stato modificato
         final found = _accounts.where((a) => a.id == _selectedAccount!.id);
         if (found.isNotEmpty) {
           _selectedAccount = found.first;
@@ -34,7 +34,7 @@ class AccountProvider extends ChangeNotifier {
         _selectedAccount = null;
       }
     } catch (e) {
-      debugPrint('Errore caricamento account: $e');
+      debugPrint('Errore caricamento account da Firestore: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -69,13 +69,27 @@ class AccountProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  double calculateCurrentBalance(Account account, List<Transaction> transactions) {
+  void clear() {
+    _accounts = [];
+    _selectedAccount = null;
+    _isLoading = false;
+    notifyListeners();
+  }
+
+  double calculateCurrentBalance(
+    Account account,
+    List<Transaction> transactions,
+  ) {
     final totalIncome = transactions
-        .where((t) => t.accountId == account.id && t.type == TransactionType.income)
+        .where(
+          (t) => t.accountId == account.id && t.type == TransactionType.income,
+        )
         .fold(0.0, (sum, t) => sum + t.amount);
 
     final totalExpense = transactions
-        .where((t) => t.accountId == account.id && t.type == TransactionType.expense)
+        .where(
+          (t) => t.accountId == account.id && t.type == TransactionType.expense,
+        )
         .fold(0.0, (sum, t) => sum + t.amount);
 
     return account.initialBalance + totalIncome - totalExpense;

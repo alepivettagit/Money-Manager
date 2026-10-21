@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
 import '../models/transaction.dart';
+import '../providers/category_provider.dart';
 
 class PieChartView extends StatefulWidget {
   final Map<String, double> categoryTotals;
@@ -30,11 +33,18 @@ class _PieChartViewState extends State<PieChartView> {
           padding: const EdgeInsets.symmetric(vertical: 40),
           child: Column(
             children: [
-              Icon(Icons.pie_chart_outline_rounded, size: 54, color: Colors.grey.shade300),
+              Icon(
+                Icons.pie_chart_outline_rounded,
+                size: 54,
+                color: Colors.grey.shade300,
+              ),
               const SizedBox(height: 12),
               Text(
                 'Nessuna spesa per questo mese',
-                style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
@@ -61,7 +71,8 @@ class _PieChartViewState extends State<PieChartView> {
                       _touchedIndex = -1;
                       return;
                     }
-                    _touchedIndex = pieTouchResponse.touchedSection!.touchedSectionIndex;
+                    _touchedIndex =
+                        pieTouchResponse.touchedSection!.touchedSectionIndex;
                   });
                 },
               ),
@@ -74,19 +85,32 @@ class _PieChartViewState extends State<PieChartView> {
                 final isTouched = index == _touchedIndex;
                 final fontSize = isTouched ? 15.0 : 12.0;
                 final radius = isTouched ? 65.0 : 54.0;
-                final cat = TransactionCategories.getCategory(entry.key, TransactionType.expense);
+                final catProvider = context.watch<CategoryProvider?>();
+                final cat =
+                    catProvider?.getCategory(
+                      entry.key,
+                      TransactionType.expense,
+                    ) ??
+                    TransactionCategories.getCategory(
+                      entry.key,
+                      TransactionType.expense,
+                    );
                 final percentage = (entry.value / widget.totalExpense) * 100;
 
                 return PieChartSectionData(
                   color: cat.color,
                   value: entry.value,
-                  title: percentage >= 5 ? '${percentage.toStringAsFixed(0)}%' : '',
+                  title: percentage >= 5
+                      ? '${percentage.toStringAsFixed(0)}%'
+                      : '',
                   radius: radius,
                   titleStyle: TextStyle(
                     fontSize: fontSize,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    shadows: const [Shadow(color: Colors.black45, blurRadius: 2)],
+                    shadows: const [
+                      Shadow(color: Colors.black45, blurRadius: 2),
+                    ],
                   ),
                 );
               }).toList(),
@@ -102,11 +126,23 @@ class _PieChartViewState extends State<PieChartView> {
             spacing: 12,
             runSpacing: 8,
             children: entries.map((entry) {
-              final cat = TransactionCategories.getCategory(entry.key, TransactionType.expense);
+              final catProvider = context.watch<CategoryProvider?>();
+              final cat =
+                  catProvider?.getCategory(
+                    entry.key,
+                    TransactionType.expense,
+                  ) ??
+                  TransactionCategories.getCategory(
+                    entry.key,
+                    TransactionType.expense,
+                  );
               final percentage = (entry.value / widget.totalExpense) * 100;
 
               return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.grey.withValues(alpha: 0.06),
                   borderRadius: BorderRadius.circular(12),
@@ -126,12 +162,18 @@ class _PieChartViewState extends State<PieChartView> {
                     const SizedBox(width: 6),
                     Text(
                       entry.key,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(width: 4),
                     Text(
                       '(${percentage.toStringAsFixed(1)}% - ${currencyFormat.format(entry.value)})',
-                      style: TextStyle(fontSize: 11, color: Colors.grey.shade600),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey.shade600,
+                      ),
                     ),
                   ],
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/transaction.dart';
 import '../services/database_helper.dart';
 
@@ -20,7 +21,7 @@ class TransactionProvider extends ChangeNotifier {
     try {
       _transactions = await _dbHelper.getTransactionsByAccount(accountId);
     } catch (e) {
-      debugPrint('Errore caricamento transazioni: $e');
+      debugPrint('Errore caricamento transazioni da Firestore: $e');
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -36,9 +37,26 @@ class TransactionProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> updateTransaction(Transaction tx) async {
+    await _dbHelper.updateTransaction(tx);
+    final index = _transactions.indexWhere((t) => t.id == tx.id);
+    if (index != -1) {
+      _transactions[index] = tx;
+      _transactions.sort((a, b) => b.date.compareTo(a.date));
+      notifyListeners();
+    }
+  }
+
   Future<void> deleteTransaction(String id) async {
     await _dbHelper.deleteTransaction(id);
     _transactions.removeWhere((t) => t.id == id);
+    notifyListeners();
+  }
+
+  void clear() {
+    _transactions = [];
+    _currentAccountId = null;
+    _isLoading = false;
     notifyListeners();
   }
 

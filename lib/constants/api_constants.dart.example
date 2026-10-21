@@ -1,0 +1,9 @@
+// Configurazione Google Gemini API per la scansione intelligente degli scontrini con IA.
+// 1. Genera la tua chiave API gratuita su: https://aistudio.google.com/apikey
+// 2. Copia questo file in 'lib/constants/api_constants.dart' e incolla la tua chiave qui sotto.
+// NOTA: Non impostare restrizioni di HTTP Referrer sulla chiave se intendi usarla su Android (APK).
+
+const String geminiApiKey = 'INSERISCI_QUI_LA_TUA_CHIAVE_GEMINI';
+
+// Modello Gemini consigliato (multimodale, veloce e gratuito con Google AI Studio)
+const String geminiModelName = 'gemini-2.5-flash';

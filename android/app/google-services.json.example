@@ -1,0 +1,30 @@
+{
+  "_comment": "QUESTO È UN FILE DI ESEMPIO. Scarica il tuo google-services.json dalla Firebase Console e posizionalo in android/app/google-services.json",
+  "project_info": {
+    "project_number": "000000000000",
+    "project_id": "tuo-progetto-firebase",
+    "storage_bucket": "tuo-progetto-firebase.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "android_client_info": {
+          "package_name": "com.example.money_manager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-INSERISCI_LA_TUA_CHIAVE_FIREBASE_QUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

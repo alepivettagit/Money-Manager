@@ -1,21 +1,9 @@
 import 'package:flutter/material.dart';
 
-enum TransactionType {
-  expense,
-  income,
-}
+import 'category_item.dart';
+export 'category_item.dart';
 
-class CategoryItem {
-  final String name;
-  final IconData icon;
-  final Color color;
-
-  const CategoryItem({
-    required this.name,
-    required this.icon,
-    required this.color,
-  });
-}
+enum TransactionType { expense, income }
 
 class TransactionCategories {
   static const List<CategoryItem> expenseCategories = [
@@ -90,13 +78,19 @@ class TransactionCategories {
   ];
 
   static CategoryItem getCategory(String name, TransactionType type) {
-    final list = type == TransactionType.expense ? expenseCategories : incomeCategories;
+    final list = type == TransactionType.expense
+        ? expenseCategories
+        : incomeCategories;
     return list.firstWhere(
       (cat) => cat.name == name,
       orElse: () => CategoryItem(
         name: name,
-        icon: type == TransactionType.expense ? Icons.money_off_rounded : Icons.attach_money_rounded,
-        color: type == TransactionType.expense ? Colors.redAccent : Colors.green,
+        icon: type == TransactionType.expense
+            ? Icons.money_off_rounded
+            : Icons.attach_money_rounded,
+        color: type == TransactionType.expense
+            ? Colors.redAccent
+            : Colors.green,
       ),
     );
   }
@@ -143,7 +137,9 @@ class Transaction {
       title: map['title'] as String,
       amount: (map['amount'] as num).toDouble(),
       date: DateTime.parse(map['date'] as String),
-      type: map['type'] == 'expense' ? TransactionType.expense : TransactionType.income,
+      type: map['type'] == 'expense'
+          ? TransactionType.expense
+          : TransactionType.income,
       category: map['category'] as String,
       note: map['note'] as String?,
     );
@@ -151,7 +147,8 @@ class Transaction {
 
   Map<String, dynamic> toJson() => toMap();
 
-  factory Transaction.fromJson(Map<String, dynamic> json) => Transaction.fromMap(json);
+  factory Transaction.fromJson(Map<String, dynamic> json) =>
+      Transaction.fromMap(json);
 
   Transaction copyWith({
     String? id,

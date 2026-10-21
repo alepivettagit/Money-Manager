@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import '../models/account.dart';
 import '../models/transaction.dart';
 import '../providers/account_provider.dart';
+import '../providers/category_provider.dart';
 import '../providers/transaction_provider.dart';
+import '../services/auth_service.dart';
 import '../services/database_helper.dart';
 import '../widgets/create_account_dialog.dart';
 import 'main_navigation_shell.dart';
@@ -17,17 +20,29 @@ class AccountSelectionScreen extends StatefulWidget {
 }
 
 class _AccountSelectionScreenState extends State<AccountSelectionScreen> {
+  bool _guidedOnce = false;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkAccountsAndGuide();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final accountProvider = context.read<AccountProvider>();
+      final categoryProvider = context.read<CategoryProvider>();
+      await Future.wait([
+        accountProvider.loadAccounts(),
+        categoryProvider.loadCategories(),
+      ]);
+      if (mounted) {
+        _checkAccountsAndGuide();
+      }
     });
   }
 
   void _checkAccountsAndGuide() {
+    if (_guidedOnce) return;
     final accountProvider = context.read<AccountProvider>();
     if (!accountProvider.isLoading && accountProvider.accounts.isEmpty) {
+      _guidedOnce = true;
       _showCreateDialog();
     }
   }
@@ -35,7 +50,7 @@ class _AccountSelectionScreenState extends State<AccountSelectionScreen> {
   void _showCreateDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (ctx) => CreateAccountDialog(
         onCreated: (name, initialBalance) async {
           final newAccount = await context
@@ -54,11 +69,8 @@ class _AccountSelectionScreenState extends State<AccountSelectionScreen> {
     await context.read<TransactionProvider>().loadTransactions(account.id);
     if (!mounted) return;
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const MainNavigationShell(),
-      ),
-    );
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => const MainNavigationShell()));
   }
 
   void _confirmDeleteAccount(Account account) {
@@ -90,23 +102,85 @@ class _AccountSelectionScreenState extends State<AccountSelectionScreen> {
     );
   }
 
+  Future<void> _confirmSignOut() async {
+    final userEmail = AuthService().currentUser?.email ?? '';
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Disconnetti Account'),
+        content: Text(
+          userEmail.isNotEmpty
+              ? 'Vuoi uscire dall\'account $userEmail?'
+              : 'Vuoi uscire dal tuo account?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Annulla'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0F172A),
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Esci'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      context.read<AccountProvider>().clear();
+      context.read<TransactionProvider>().clear();
+      await AuthService().signOut();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currencyFormat = NumberFormat.currency(locale: 'it_IT', symbol: '€');
     final accountProvider = context.watch<AccountProvider>();
+    final userEmail = AuthService().currentUser?.email;
 
     if (accountProvider.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final accounts = accountProvider.accounts;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('I Miei Saldi'),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('I Miei Saldi'),
+            if (userEmail != null && userEmail.isNotEmpty)
+              Text(
+                userEmail,
+                style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+          ],
+        ),
         centerTitle: false,
+        actions: [
+          IconButton(
+            onPressed: () => context.read<AccountProvider>().loadAccounts(),
+            icon: const Icon(Icons.refresh_rounded, color: Color(0xFF0F172A)),
+            tooltip: 'Aggiorna',
+          ),
+          IconButton(
+            onPressed: _confirmSignOut,
+            icon: const Icon(Icons.logout_rounded, color: Color(0xFF0F172A)),
+            tooltip: 'Esci dall\'account',
+          ),
+          const SizedBox(width: 4),
+        ],
       ),
       body: accounts.isEmpty
           ? Center(
@@ -130,7 +204,10 @@ class _AccountSelectionScreenState extends State<AccountSelectionScreen> {
                     const SizedBox(height: 24),
                     const Text(
                       'Nessun Saldo Creato',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     const Text(
@@ -144,13 +221,21 @@ class _AccountSelectionScreenState extends State<AccountSelectionScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0F172A),
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 14,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                       ),
                       icon: const Icon(Icons.add_rounded),
                       label: const Text(
                         'Crea Primo Saldo',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
                       ),
                     ),
                   ],
@@ -182,13 +267,23 @@ class _AccountSelectionScreenState extends State<AccountSelectionScreen> {
               backgroundColor: const Color(0xFF0F172A),
               foregroundColor: Colors.white,
               icon: const Icon(Icons.add_rounded),
-              label: const Text('Nuovo Saldo', style: TextStyle(fontWeight: FontWeight.bold)),
+              label: const Text(
+                'Nuovo Saldo',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             )
           : null,
     );
   }
 
-  Widget _buildAccountCard(BuildContext context, Account account, NumberFormat currencyFormat) {
+  Widget _buildAccountCard(
+    BuildContext context,
+    Account account,
+    NumberFormat currencyFormat,
+  ) {
+    // Also listen to TransactionProvider so returning from MainNavigationShell updates the balance immediately
+    context.watch<TransactionProvider>();
+
     return FutureBuilder<List<Transaction>>(
       future: DatabaseHelper.instance.getTransactionsByAccount(account.id),
       builder: (context, snapshot) {
@@ -199,7 +294,8 @@ class _AccountSelectionScreenState extends State<AccountSelectionScreen> {
         final totalExpense = txs
             .where((t) => t.type == TransactionType.expense)
             .fold(0.0, (sum, t) => sum + t.amount);
-        final currentBalance = account.initialBalance + totalIncome - totalExpense;
+        final currentBalance =
+            account.initialBalance + totalIncome - totalExpense;
 
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 8),
@@ -278,7 +374,11 @@ class _AccountSelectionScreenState extends State<AccountSelectionScreen> {
                         ),
                         const SizedBox(height: 6),
                         IconButton(
-                          icon: const Icon(Icons.more_horiz_rounded, size: 20, color: Colors.grey),
+                          icon: const Icon(
+                            Icons.more_horiz_rounded,
+                            size: 20,
+                            color: Colors.grey,
+                          ),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                           onPressed: () => _confirmDeleteAccount(account),

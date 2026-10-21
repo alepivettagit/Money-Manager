@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'home_screen.dart';
 import 'calendar_screen.dart';
 import 'analytics_screen.dart';
@@ -22,10 +23,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _tabs,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _tabs),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentIndex,
         elevation: 6,
@@ -44,12 +42,18 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
           ),
           NavigationDestination(
             icon: Icon(Icons.calendar_month_outlined),
-            selectedIcon: Icon(Icons.calendar_month_rounded, color: Color(0xFF0F172A)),
+            selectedIcon: Icon(
+              Icons.calendar_month_rounded,
+              color: Color(0xFF0F172A),
+            ),
             label: 'Calendario',
           ),
           NavigationDestination(
             icon: Icon(Icons.pie_chart_outline_rounded),
-            selectedIcon: Icon(Icons.pie_chart_rounded, color: Color(0xFF0F172A)),
+            selectedIcon: Icon(
+              Icons.pie_chart_rounded,
+              color: Color(0xFF0F172A),
+            ),
             label: 'Ripartizione',
           ),
         ],

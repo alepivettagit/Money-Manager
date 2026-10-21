@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+
 import '../models/transaction.dart';
 import '../providers/account_provider.dart';
 import '../providers/transaction_provider.dart';
@@ -38,10 +39,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
-        builder: (ctx) => DayDetailSheet(
-          selectedDate: selectedDay,
-          account: account,
-        ),
+        builder: (ctx) =>
+            DayDetailSheet(selectedDate: selectedDay, account: account),
       );
     }
   }
@@ -57,9 +56,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final netSavings = monthIncome - monthExpense;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Calendario Movimenti'),
-      ),
+      appBar: AppBar(title: const Text('Calendario Movimenti')),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -98,7 +95,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: netSavings >= 0
                               ? const Color(0xFF10B981).withValues(alpha: 0.2)
@@ -128,11 +128,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           children: [
                             const Row(
                               children: [
-                                Icon(Icons.arrow_downward_rounded, size: 14, color: Color(0xFF10B981)),
+                                Icon(
+                                  Icons.arrow_downward_rounded,
+                                  size: 14,
+                                  color: Color(0xFF10B981),
+                                ),
                                 SizedBox(width: 4),
                                 Text(
                                   'Entrate Mese',
-                                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                                  style: TextStyle(
+                                    color: Color(0xFF94A3B8),
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
@@ -164,11 +171,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           children: [
                             const Row(
                               children: [
-                                Icon(Icons.arrow_upward_rounded, size: 14, color: Color(0xFFEF4444)),
+                                Icon(
+                                  Icons.arrow_upward_rounded,
+                                  size: 14,
+                                  color: Color(0xFFEF4444),
+                                ),
                                 SizedBox(width: 4),
                                 Text(
                                   'Spese Mese',
-                                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                                  style: TextStyle(
+                                    color: Color(0xFF94A3B8),
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
@@ -195,12 +209,17 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     children: [
                       const Text(
                         'Differenza del mese:',
-                        style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                        style: TextStyle(
+                          color: Color(0xFF94A3B8),
+                          fontSize: 13,
+                        ),
                       ),
                       Text(
                         currencyFormat.format(netSavings),
                         style: TextStyle(
-                          color: netSavings >= 0 ? Colors.white : const Color(0xFFEF4444),
+                          color: netSavings >= 0
+                              ? Colors.white
+                              : const Color(0xFFEF4444),
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -236,9 +255,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                 startingDayOfWeek: StartingDayOfWeek.monday,
                 calendarFormat: CalendarFormat.month,
-                availableCalendarFormats: const {
-                  CalendarFormat.month: 'Mese',
-                },
+                availableCalendarFormats: const {CalendarFormat.month: 'Mese'},
                 headerStyle: const HeaderStyle(
                   formatButtonVisible: false,
                   titleCentered: true,
@@ -276,8 +293,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     final dayTxs = txProvider.getTransactionsForDay(date);
                     if (dayTxs.isEmpty) return null;
 
-                    final hasIncome = dayTxs.any((t) => t.type == TransactionType.income);
-                    final hasExpense = dayTxs.any((t) => t.type == TransactionType.expense);
+                    final hasIncome = dayTxs.any(
+                      (t) => t.type == TransactionType.income,
+                    );
+                    final hasExpense = dayTxs.any(
+                      (t) => t.type == TransactionType.expense,
+                    );
 
                     return Positioned(
                       bottom: 2,
@@ -314,11 +335,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
             // Istruzione touch
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+              padding: const EdgeInsets.symmetric(
+                vertical: 8.0,
+                horizontal: 20,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.touch_app_rounded, size: 16, color: Colors.grey.shade500),
+                  Icon(
+                    Icons.touch_app_rounded,
+                    size: 16,
+                    color: Colors.grey.shade500,
+                  ),
                   const SizedBox(width: 6),
                   Text(
                     'Tocca un giorno per vedere i movimenti in dettaglio',

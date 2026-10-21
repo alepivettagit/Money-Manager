@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
 import '../models/account.dart';
 import '../models/transaction.dart';
 import '../providers/account_provider.dart';
+import '../providers/category_provider.dart';
 import '../providers/transaction_provider.dart';
+import '../services/gemini_receipt_service.dart';
 import '../widgets/summary_card.dart';
 import '../widgets/transaction_tile.dart';
 import '../widgets/add_transaction_dialog.dart';
 import '../widgets/create_account_dialog.dart';
 
-enum FilterPeriod {
-  all,
-  thisMonth,
-  thisWeek,
-  today,
-}
+enum FilterPeriod { all, thisMonth, thisWeek, today }
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -81,7 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ...accounts.map((acc) {
                 final isSelected = acc.id == currentAccount?.id;
                 return ListTile(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
                   tileColor: isSelected
                       ? const Color(0xFF0F172A).withValues(alpha: 0.06)
                       : Colors.transparent,
@@ -92,15 +93,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: Text(
                     acc.name,
                     style: TextStyle(
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
                   trailing: isSelected
-                      ? const Icon(Icons.check_circle_rounded, color: Color(0xFF10B981))
+                      ? const Icon(
+                          Icons.check_circle_rounded,
+                          color: Color(0xFF10B981),
+                        )
                       : null,
                   onTap: () {
                     accountProvider.selectAccount(acc);
-                    context.read<TransactionProvider>().loadTransactions(acc.id);
+                    context.read<TransactionProvider>().loadTransactions(
+                      acc.id,
+                    );
                     Navigator.of(ctx).pop();
                   },
                 );
@@ -111,12 +119,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   Expanded(
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
                         Navigator.of(ctx).pop();
-                        Navigator.of(context).pop(); // Torna a AccountSelectionScreen
+                        Navigator.of(context)
+                            .pop(); // Torna a AccountSelectionScreen
                       },
                       icon: const Icon(Icons.grid_view_rounded, size: 18),
                       label: const Text('Tutti i Saldi'),
@@ -128,7 +139,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0F172A),
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
@@ -141,8 +154,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   .read<AccountProvider>()
                                   .createAccount(name, initialBalance);
                               if (context.mounted) {
-                                context.read<AccountProvider>().selectAccount(newAccount);
-                                context.read<TransactionProvider>().loadTransactions(newAccount.id);
+                                context.read<AccountProvider>().selectAccount(
+                                  newAccount,
+                                );
+                                context
+                                    .read<TransactionProvider>()
+                                    .loadTransactions(newAccount.id);
                               }
                             },
                           ),
@@ -173,6 +190,211 @@ class _HomeScreenState extends State<HomeScreen> {
         accountId: account.id,
         onAdd: (tx) {
           context.read<TransactionProvider>().addTransaction(tx);
+        },
+      ),
+    );
+  }
+
+  Future<void> _openScanReceiptModal(Account account) async {
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Scansiona Scontrino con IA',
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16),
+              ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                leading: const CircleAvatar(
+                  backgroundColor: Color(0xFF10B981),
+                  child: Icon(Icons.camera_alt_rounded, color: Colors.white),
+                ),
+                title: const Text(
+                  'Scatta con Fotocamera',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: const Text(
+                  'Inquadra chiaramente data, negozio e totale',
+                ),
+                onTap: () => Navigator.of(ctx).pop(ImageSource.camera),
+              ),
+              const SizedBox(height: 6),
+              ListTile(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                leading: const CircleAvatar(
+                  backgroundColor: Color(0xFF0F172A),
+                  child: Icon(Icons.photo_library_rounded, color: Colors.white),
+                ),
+                title: const Text(
+                  'Carica da Galleria o File',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                subtitle: const Text('Scegli una foto già salvata'),
+                onTap: () => Navigator.of(ctx).pop(ImageSource.gallery),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (source == null || !mounted) return;
+
+    final picker = ImagePicker();
+    final photo = await picker.pickImage(
+      source: source,
+      maxWidth: 1200,
+      maxHeight: 1200,
+      imageQuality: 85,
+    );
+
+    if (photo == null || !mounted) return;
+
+    final customCategories = context.read<CategoryProvider>().getCategoryNames(
+      TransactionType.expense,
+    );
+
+    // Mostra popup di attesa analisi
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogCtx) => const Center(
+        child: Card(
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 28, vertical: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircularProgressIndicator(color: Color(0xFF10B981)),
+                SizedBox(height: 18),
+                Text(
+                  'Gemini sta leggendo lo scontrino... 🧾',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+                SizedBox(height: 6),
+                Text(
+                  'Estrazione importo, negozio e prodotti',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    try {
+      final bytes = await photo.readAsBytes();
+      final mimeType = photo.mimeType ?? 'image/jpeg';
+      final result = await GeminiReceiptService.instance.analyzeReceipt(
+        imageBytes: bytes,
+        mimeType: mimeType,
+        customCategories: customCategories,
+      );
+
+      if (!mounted) return;
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pop(); // Chiudi popup caricamento
+
+      // Apri foglio transazione già pre-compilato
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        builder: (ctx) => AddTransactionSheet(
+          accountId: account.id,
+          initialAmount: result.total,
+          initialTitle: result.merchant,
+          initialCategory: result.category,
+          initialDate: result.date,
+          initialNote: result.itemsSummary,
+          initialType: TransactionType.expense,
+          onAdd: (tx) {
+            context.read<TransactionProvider>().addTransaction(tx);
+          },
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pop(); // Chiudi popup caricamento
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Errore: ${e.toString().replaceAll("Exception: ", "")}',
+          ),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
+
+  void _openEditTransactionModal(Account account, Transaction tx) {
+    final txProvider = context.read<TransactionProvider>();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => AddTransactionSheet(
+        accountId: account.id,
+        transactionToEdit: tx,
+        onUpdate: (updatedTx) {
+          txProvider.updateTransaction(updatedTx);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${updatedTx.title} aggiornata'),
+              backgroundColor: const Color(0xFF10B981),
+            ),
+          );
+        },
+        onDelete: () {
+          txProvider.deleteTransaction(tx.id);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${tx.title} eliminata'),
+              action: SnackBarAction(
+                label: 'Annulla',
+                textColor: const Color(0xFF10B981),
+                onPressed: () {
+                  txProvider.addTransaction(tx);
+                },
+              ),
+            ),
+          );
         },
       ),
     );
@@ -218,7 +440,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(
                     account.name,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 6),
@@ -250,14 +475,20 @@ class _HomeScreenState extends State<HomeScreen> {
             // Filtro Periodo
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
                       _buildPeriodChip(FilterPeriod.thisMonth, 'Questo Mese'),
                       const SizedBox(width: 8),
-                      _buildPeriodChip(FilterPeriod.thisWeek, 'Questa Settimana'),
+                      _buildPeriodChip(
+                        FilterPeriod.thisWeek,
+                        'Questa Settimana',
+                      ),
                       const SizedBox(width: 8),
                       _buildPeriodChip(FilterPeriod.today, 'Oggi'),
                       const SizedBox(width: 8),
@@ -329,47 +560,65 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             else
               SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final tx = filteredList[index];
-                    return TransactionTile(
-                      transaction: tx,
-                      onDelete: () {
-                        txProvider.deleteTransaction(tx.id);
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('${tx.title} eliminata'),
-                            action: SnackBarAction(
-                              label: 'Annulla',
-                              textColor: const Color(0xFF10B981),
-                              onPressed: () {
-                                txProvider.addTransaction(tx);
-                              },
-                            ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final tx = filteredList[index];
+                  return TransactionTile(
+                    transaction: tx,
+                    onTap: () => _openEditTransactionModal(account, tx),
+                    onDelete: () {
+                      txProvider.deleteTransaction(tx.id);
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('${tx.title} eliminata'),
+                          action: SnackBarAction(
+                            label: 'Annulla',
+                            textColor: const Color(0xFF10B981),
+                            onPressed: () {
+                              txProvider.addTransaction(tx);
+                            },
                           ),
-                        );
-                      },
-                    );
-                  },
-                  childCount: filteredList.length,
-                ),
+                        ),
+                      );
+                    },
+                  );
+                }, childCount: filteredList.length),
               ),
 
             // Spazio in fondo per non coprire il Floating Action Button
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 90),
-            ),
+            const SliverToBoxAdapter(child: SizedBox(height: 90)),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _openAddTransactionModal(account),
-        backgroundColor: const Color(0xFF0F172A),
-        foregroundColor: Colors.white,
-        elevation: 4,
-        icon: const Icon(Icons.add_rounded),
-        label: const Text('Nuova Spesa', style: TextStyle(fontWeight: FontWeight.bold)),
+      floatingActionButton: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton.extended(
+            heroTag: 'scanReceiptFab',
+            onPressed: () => _openScanReceiptModal(account),
+            backgroundColor: const Color(0xFF10B981),
+            foregroundColor: Colors.white,
+            elevation: 4,
+            icon: const Icon(Icons.document_scanner_rounded),
+            label: const Text(
+              'Scansiona',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(width: 10),
+          FloatingActionButton.extended(
+            heroTag: 'newTxFab',
+            onPressed: () => _openAddTransactionModal(account),
+            backgroundColor: const Color(0xFF0F172A),
+            foregroundColor: Colors.white,
+            elevation: 4,
+            icon: const Icon(Icons.add_rounded),
+            label: const Text(
+              'Nuova Spesa',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
       ),
     );
   }
